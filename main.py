@@ -11,18 +11,16 @@ app = FastAPI(title="Real-Time Risk Monitor")
 )
 
 async def assess_transaction_risk(transaction: TransactionRequest):
-    """
-    Receives a transaction, validates it via Pydantic, 
-    and returns a risk decision.
-    """
     
-    # 1. Placeholder for Risk Logic (Coming in Step 3)
-    # For now, we simply 'ALLOW' everything that passes Pydantic validation.
+    # Receives a transaction, validates it via Pydantic, and returns a risk decision.
+    
+    # 1. Placeholder for Risk Logic
+    # Currently allows all.
     decision = TransactionStatus.ALLOW
     risk_score = 0
     triggered_rules = []
 
-    # 2. Return the assessment based on the response schema
+    # 2. Returns the assessment based on the response schema
     return RiskAssessment(
         transaction_id=transaction.transaction_id,
         decision=decision,
