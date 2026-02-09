@@ -1,4 +1,3 @@
-#Boilerplate created using Gemini
 from decimal import Decimal
 from enum import Enum
 from uuid import UUID
@@ -11,7 +10,6 @@ class CurrencyCode(str, Enum):
     USD = "USD"
     EUR = "EUR"
     GBP = "GBP"
-    # Add others as needed
 
 class TransactionStatus(str, Enum):
     ALLOW = "ALLOW"
@@ -20,13 +18,18 @@ class TransactionStatus(str, Enum):
 
 class TransactionRequest(BaseModel):
     # Strict mode prevents Pydantic from "coercing" data (e.g., turning a float into an int)
-    model_config = ConfigDict(strict=True)
+    # Removed strict mode after 422 error, made local strict constraints
+    model_config = ConfigDict(
+        strict=True,
+        coerce_numbers_to_str=True
+    )
 
     transaction_id: UUID = Field(description="Unique identifier for the transaction")
     account_id: str = Field(min_length=5, max_length=20, pattern=r"^[A-Z0-9]+$")
     
     # Financial data MUST use Decimal, not float
-    amount: Annotated[Decimal, Field(gt=0, decimal_places=2)] 
+    # Added type constraints after 422 'is_instace' error
+    amount: Decimal = Field(gt=0, le=1000000, decimal_places=2, allow_inf_nan=False )
     currency: CurrencyCode
     
     merchant_id: str

@@ -5,6 +5,8 @@ import uuid
 
 app = FastAPI(title="Real-Time Risk Monitor")
 
+@app.get("/")
+
 @app.post(
     "/v1/assess-risk", 
     response_model=RiskAssessment, 
