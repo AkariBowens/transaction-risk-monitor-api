@@ -20,7 +20,7 @@ class TransactionRequest(BaseModel):
     # Strict mode prevents Pydantic from "coercing" data (e.g., turning a float into an int)
     # Removed strict mode after 422 error, made local strict constraints
     model_config = ConfigDict(
-        strict=True,
+        strict=False,
         coerce_numbers_to_str=True
     )
 

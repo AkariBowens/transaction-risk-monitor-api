@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from schemas import TransactionRequest, RiskAssessment, TransactionStatus
-from logic.rules import check_large_transaction
+from logic.rules import check_large_transaction, check_merchant_blacklist
 import uuid
 
 app = FastAPI(title="Real-Time Risk Monitor")
@@ -23,6 +23,11 @@ async def assess_transaction_risk(transaction: TransactionRequest):
     if large_transaction_score > 0:
         total_score += large_transaction_score
         triggered_rules.append("LARGE_TRANSACTION_DETECTION")
+    
+    blacklist_score = check_merchant_blacklist(transaction)
+    if blacklist_score > 0:
+        total_score += blacklist_score
+        triggered_rules.append("BLACKLISTED_MERCHANT_ATTEMPT")
 
     # Determines transaction's final risk score
     if total_score > 71:
@@ -32,7 +37,7 @@ async def assess_transaction_risk(transaction: TransactionRequest):
     else: 
         final_decision=TransactionStatus.ALLOW
 
-    # 2. Returns the assessment based on the response schema
+    # Returns the assessment based on the response schema
     return RiskAssessment(
         transaction_id=transaction.transaction_id,
         decision=final_decision,

@@ -10,3 +10,18 @@ def check_large_transaction(tx: TransactionRequest) -> int:
         return 50
     return 0
 
+# O(1) complexity
+BLACKLISTED_MERCHANTS = {
+
+    # Test merchants
+    "MERCH_FRAUD_001",
+    "EVIL_CORP_000",
+    "SCAM_SQUARE_99"
+}
+
+
+def check_merchant_blacklist(tx: TransactionRequest) -> int:
+    # If the merchant is in the list, returns 100 points, and auto denies
+    if tx.merchant_id in BLACKLISTED_MERCHANTS:
+        return 100
+    return 0
