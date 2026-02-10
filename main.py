@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from schemas import TransactionRequest, RiskAssessment, TransactionStatus
-from logic.rules import check_large_transaction, check_merchant_blacklist
+from logic.rules import check_large_transaction, check_merchant_blacklist, check_velocity_limit
 import uuid
 
 app = FastAPI(title="Real-Time Risk Monitor")
@@ -28,6 +28,15 @@ async def assess_transaction_risk(transaction: TransactionRequest):
     if blacklist_score > 0:
         total_score += blacklist_score
         triggered_rules.append("BLACKLISTED_MERCHANT_ATTEMPT")
+
+    try:
+        velocity_score = check_velocity_limit(transaction)
+        if velocity_score > 0:
+            total_score += velocity_score
+            triggered_rules.append("VELOCITY_LIMIT_EXCEEDED")
+    except Exception as e:
+        # Mostly triggers when Redis is down
+        print(f"Redis error: {e}")
 
     # Determines transaction's final risk score
     if total_score > 71:
