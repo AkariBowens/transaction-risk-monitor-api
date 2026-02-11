@@ -6,6 +6,8 @@ import uuid
 app = FastAPI(title="Real-Time Risk Monitor")
 
 @app.get("/")
+async def health_check():
+    return {"status": "online", "service": "Transaction Risk Monitor"}
 
 @app.post(
     "/v1/assess-risk", 
