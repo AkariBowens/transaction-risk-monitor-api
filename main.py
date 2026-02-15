@@ -1,13 +1,26 @@
 from fastapi import FastAPI, HTTPException, status
 from schemas import TransactionRequest, RiskAssessment, TransactionStatus
 from logic.rules import check_large_transaction, check_merchant_blacklist, check_velocity_limit
+from logic.utils import mask_string
 import uuid
+import logging
+import sys
 
 app = FastAPI(title="Real-Time Risk Monitor")
 
 @app.get("/")
 async def health_check():
     return {"status": "online", "service": "Transaction Risk Monitor"}
+
+# Logger
+logging.basicConfig(
+    level = logging.INFO,
+    format='{"time": "%(asctime)s", "level": "%(levelname)s", "message": "%(message)s"}',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
+logger = logging.getLogger('risk-monitor')
+
 
 @app.post(
     "/v1/assess-risk", 
@@ -16,6 +29,11 @@ async def health_check():
 )
 
 async def assess_transaction_risk(transaction: TransactionRequest):
+
+    masked_acc = mask_string(transaction.account_id)
+    masked_ip = mask_string(transaction.ip_address, visible_start=4, visible_end=3)
+
+    logger.info(f"Processing transaction: {transaction.transaction_id} for account: {masked_acc} | IP: {masked_ip}")
     
     # Receives a transaction, validates it via Pydantic, and returns a risk decision.
     total_score = 0
@@ -47,6 +65,9 @@ async def assess_transaction_risk(transaction: TransactionRequest):
         final_decision=TransactionStatus.REVIEW
     else: 
         final_decision=TransactionStatus.ALLOW
+
+    # Logger decision
+    logger.info(f"Decision for {transaction.transaction_id}: {final_decision} | Score: {total_score}")
 
     # Returns the assessment based on the response schema
     return RiskAssessment(
