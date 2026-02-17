@@ -43,16 +43,18 @@ A high-performance FastAPI service designed to assess financial transaction risk
    uvicorn main:app --reload
    ```
 
-🧪 Running Tests
+## 🧪 Running Tests
+
 The test suite includes an automated flushall fixture to ensure clean state between runs.
 
     ```PowerShell
     python -m pytest -v
     ```
 
-💡 Engineering Highlights
-Clamping Logic: Implemented score clamping to ensure API responses never violate schema constraints (le=100).
+## 💡 Engineering Highlights
 
-Idempotent Testing: Leveraged Pytest fixtures to reset Redis state, preventing data leakage between tests.
+**Clamping Logic:** Implemented score clamping to ensure API responses never violate schema constraints (le=100).
 
-UTC Normalization: All transactions are processed using timezone.utc for global audit consistency.
+**Idempotent Testing:** Leveraged Pytest fixtures to reset Redis state, preventing data leakage between tests.
+
+**UTC Normalization:** All transactions are processed using timezone.utc for global audit consistency.
