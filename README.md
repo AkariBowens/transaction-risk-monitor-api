@@ -27,28 +27,28 @@ A high-performance FastAPI service designed to assess financial transaction risk
 
 2. Start the Redis container:
 
-```PowerShell
-docker run -d --name risk-redis -p 6379:6379 redis
-```
+   ```PowerShell
+   docker run -d --name risk-redis -p 6379:6379 redis
+   ```
 
 3. Install dependencies:
 
-```PowerShell
-pip install -r requirements.txt
-```
+   ```PowerShell
+   pip install -r requirements.txt
+   ```
 
 4. Run the API:
 
-```PowerShell
-uvicorn main:app --reload
-```
+   ```PowerShell
+   uvicorn main:app --reload
+   ```
 
 🧪 Running Tests
 The test suite includes an automated flushall fixture to ensure clean state between runs.
 
-```PowerShell
-python -m pytest -v
-```
+    ```PowerShell
+    python -m pytest -v
+    ```
 
 💡 Engineering Highlights
 Clamping Logic: Implemented score clamping to ensure API responses never violate schema constraints (le=100).
