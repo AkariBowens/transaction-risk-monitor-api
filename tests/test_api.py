@@ -37,6 +37,8 @@ def test_velocity_check():
         if amount > 10000:
             assert data["decision"] in ["DENY", "REVIEW"]
             assert "LARGE_TRANSACTION_DETECTION" in data["triggered_rules"] 
+        elif amount < 10000 and data["decision"] == "DENY":
+            assert "VELOCITY_LIMIT_EXCEEDED" in data["triggered_rules"] 
         else:
             assert data["decision"] == "ALLOW"
 

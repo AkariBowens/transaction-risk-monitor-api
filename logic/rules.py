@@ -30,7 +30,7 @@ def check_merchant_blacklist(tx: TransactionRequest) -> int:
 
 def check_velocity_limit(tx: TransactionRequest) -> int:
 
-    # If an account makes more than 3 transaction in one minute, add 80 points
+    # If an account makes more than 3 transactions in one minute, add 80 points
     key = f"velocity:{tx.account_id}"
 
     current_count = redis_client.incr(key)
