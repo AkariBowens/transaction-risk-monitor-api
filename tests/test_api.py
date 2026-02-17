@@ -8,6 +8,7 @@ import redis
 def clear_redis():
     r = redis.Redis(host='localhost', port=6379, db=0, socket_connect_timeout=1)
     r.flushall()
+    print("/----- Redis Flushed -----/")
     # Runs the test
     yield
 
