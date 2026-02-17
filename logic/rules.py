@@ -2,7 +2,7 @@ import redis
 from schemas import TransactionRequest
 from decimal import Decimal
 
-redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True, socket_connect_timeout=1)
 
 LARGE_TRANSACTION_THRESHOLD = Decimal("10000.00")
 

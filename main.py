@@ -59,7 +59,7 @@ async def assess_transaction_risk(transaction: TransactionRequest):
         print(f"Redis error: {e}")
 
     # Determines transaction's final risk score
-    if total_score > 71:
+    if total_score >= 71:
         final_decision = TransactionStatus.DENY
     elif total_score >= 31:
         final_decision=TransactionStatus.REVIEW
@@ -69,12 +69,16 @@ async def assess_transaction_risk(transaction: TransactionRequest):
     # Logger decision
     logger.info(f"Decision for {transaction.transaction_id}: {final_decision} | Score: {total_score}")
 
+    # Clamps risk score to max of 100
+    final_score = min(total_score, 100)
+    
     # Returns the assessment based on the response schema
     return RiskAssessment(
         transaction_id=transaction.transaction_id,
         decision=final_decision,
-        risk_score=total_score,
+        risk_score=final_score,
         triggered_rules=triggered_rules
+        
     )
 
 if __name__ == "__main__":
